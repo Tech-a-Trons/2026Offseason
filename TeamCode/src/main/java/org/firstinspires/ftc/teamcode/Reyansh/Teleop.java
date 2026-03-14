@@ -1,17 +1,24 @@
 package org.firstinspires.ftc.teamcode.Reyansh;
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.Pranav.Intake;
 import org.firstinspires.ftc.teamcode.Reyansh.Subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.Reyansh.Subsystems.Intaker;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import java.util.function.Supplier;
 
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
-
 @TeleOp(name = "Reyansh's TeleOp")
 public class Teleop extends NextFTCOpMode {
     public Teleop() {
@@ -30,9 +37,24 @@ public class Teleop extends NextFTCOpMode {
                 BindingsComponent.INSTANCE
         );
     }
+    private Follower follower;
+    public static Pose startingPose; //See ExampleAuto to understand how to use this
+    private boolean automatedDrive;
+    private Supplier<PathChain> pathChain;
+    private TelemetryManager telemetryM;
+    private boolean slowMode = false;
+    private double slowModeMultiplier = 0.5;
+
     @Override
     public void onInit () {
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
+        follower.update();
+        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+
         Intake Intake = new Intake(hardwareMap);
+
+
 
     }
     @Override
@@ -41,16 +63,28 @@ public class Teleop extends NextFTCOpMode {
     }
     @Override
     public void onStartButtonPressed() {
+        follower.startTeleopDrive();
+
         Gamepads.gamepad1().a()
-                .whenBecomesTrue(
-                        Intaker.INSTANCE.forward()
-    );
+                .whenBecomesTrue(() -> {
+                            Intaker.INSTANCE.forward();
+                        }
+                );
 
     }
 
+
+
+
+
     @Override
     public void onUpdate(){
-
+        follower.setTeleOpDrive(
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
+                true // Robot Centric
+        );
     }
 
     @Override
