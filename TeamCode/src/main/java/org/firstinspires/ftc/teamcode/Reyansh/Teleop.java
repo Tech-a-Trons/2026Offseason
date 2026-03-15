@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.Reyansh;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -7,7 +6,8 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.Pranav.Intake;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import org.firstinspires.ftc.teamcode.Reyansh.Subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.Reyansh.Subsystems.Intaker;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -42,8 +42,7 @@ public class Teleop extends NextFTCOpMode {
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
     private TelemetryManager telemetryM;
-    private boolean slowMode = false;
-    private double slowModeMultiplier = 0.5;
+    private double slowModeMultiplier = 1;
 
     @Override
     public void onInit () {
@@ -51,11 +50,7 @@ public class Teleop extends NextFTCOpMode {
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-
-        Intake Intake = new Intake(hardwareMap);
-
-
-
+        Intaker.INSTANCE.init(hardwareMap);
     }
     @Override
     public void onWaitForStart() {
@@ -73,12 +68,12 @@ public class Teleop extends NextFTCOpMode {
 
     }
 
-
-
-
-
     @Override
     public void onUpdate(){
+
+        follower.update();
+        telemetryM.update();
+
         follower.setTeleOpDrive(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,

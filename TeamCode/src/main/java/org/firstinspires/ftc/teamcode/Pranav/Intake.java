@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Pranav;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
@@ -7,8 +9,8 @@ import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.MotorEx;
 
 public class Intake implements Subsystem {
-    public static final Intake INSTANCE = new Intake();
-    private Intake() { }
+    public static final Intake INSTANCE = new Intake(hardwareMap);
+    public Intake(HardwareMap hardwareMap) { }
     private MotorEx motor = new MotorEx("intake");
     private ControlSystem controlSystem = ControlSystem.builder()
             .posPid(0.005, 0, 0)

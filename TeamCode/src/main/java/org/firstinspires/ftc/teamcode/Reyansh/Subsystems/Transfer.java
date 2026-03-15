@@ -5,30 +5,30 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.MotorEx;
 
-public class Intaker implements Subsystem {
-    public static final Intaker INSTANCE = new Intaker();
+public class Transfer implements Subsystem {
+    public static final Transfer INSTANCE = new Transfer();
     // put hardware, commands, etc here
 
-    MotorEx intake = new MotorEx("intake");
+    MotorEx transfer = new MotorEx("transfer");
 
     public void forward() {
-        intake.setPower(1);
+        transfer.setPower(-1);
     }
 
     public void backward() {
-        intake.setPower(1);
+        transfer.setPower(1);
     }
 
     public void slight() {
-        intake.setPower(0.35);
+        transfer.setPower(-0.35);
     }
     public void advance() {
-        intake.setPower(0.60);
+        transfer.setPower(-0.60);
     }
 
     public void init(HardwareMap hardwareMap) {
         // initialization logic (runs on init)
-        MotorEx intake = new MotorEx("intake");
+        MotorEx transfer = new MotorEx("transfer");
     }
 
     @Override
