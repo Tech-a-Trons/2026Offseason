@@ -37,6 +37,8 @@ public class Teleop extends NextFTCOpMode {
                 BindingsComponent.INSTANCE
         );
     }
+
+    boolean intaketoggle = false;
     private Follower follower;
     public static Pose startingPose; //See ExampleAuto to understand how to use this
     private boolean automatedDrive;
@@ -62,8 +64,13 @@ public class Teleop extends NextFTCOpMode {
 
         Gamepads.gamepad1().a()
                 .whenBecomesTrue(() -> {
+                    intaketoggle = !intaketoggle;
+                    if (intaketoggle) {
+                        Intaker.INSTANCE.forward();
+                    } else {
                             Intaker.INSTANCE.forward();
                         }
+                    }
                 );
 
     }

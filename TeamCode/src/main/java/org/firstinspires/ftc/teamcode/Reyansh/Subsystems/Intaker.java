@@ -16,12 +16,13 @@ public class Intaker implements Subsystem {
     }
 
     public void backward() {
-        intake.setPower(1);
+        intake.setPower(-1);
     }
 
     public void slight() {
         intake.setPower(0.35);
     }
+
     public void advance() {
         intake.setPower(0.60);
     }
