@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.Reyansh.Subsystems;
 
+import static com.pedropathing.math.MathFunctions.clamp;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
-import android.health.connect.datatypes.units.Velocity;
-
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -14,13 +11,12 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.impl.MotorEx;
+import dev.nextftc.hardware.impl.ServoEx;
 
-public class TurretPID extends NextFTCOpMode {
+public class Hood extends NextFTCOpMode {
     private ControlSystem controller;
-    public static MotorGroup outtake = new MotorGroup(
-            new MotorEx("outtakeleft"),
-            new MotorEx("outtakeright").reversed()
-    );
+    ServoEx hood = hardwareMap.get(ServoEx.class, "hood");
+
 
     Pose CachedPose = null;
 
@@ -29,11 +25,11 @@ public class TurretPID extends NextFTCOpMode {
 
 
         controller = ControlSystem.builder()
-                .velPid(0.001, 0.0, 0.0)
+                .posPid(0.001, 0.0, 0.0)
                 .basicFF(0.003, 0.08, 0.0)
                 .build();
 
-        controller.setGoal(new KineticState(0.0, 0.0));
+        controller.setGoal(new KineticState(0.0));
     }
 
     double yt = 121 - 72;
@@ -58,15 +54,17 @@ public class TurretPID extends NextFTCOpMode {
         double y = cachedPose.getX() - 72;
 
         double distance = Math.sqrt(Math.pow(yt-y, 2)  + Math.pow(xt-x, 2));
-        double Velocity = (distance * 200) + 200;
-        telemetry.addData(String.valueOf(Velocity), "Velocity");
+        double Position = (distance * 0.01) + 0.2;
+        telemetry.addData(String.valueOf(Position), "Position");
+
+//        Position = clamp(Position, 0.0, 1.0);
         telemetry.addData(String.valueOf(x), "x");
         telemetry.addData(String.valueOf(y), "y");
         telemetry.addData(String.valueOf(distance), "distance");
-        telemetry.addData(String.valueOf(outtake.getVelocity()), "distance");
+//        telemetry.addData(String.valueOf(hood.getVelocity()), "distance");
 
 
-        controller.setGoal(new KineticState(0.0, Velocity));
+        controller.setGoal(new KineticState(Position));
 //        if (gamepad1.aWasPressed()) {
 //            controller.setGoal(new KineticState(0.0, 2000.0));
 //        } else if (gamepad1.bWasPressed()) {
@@ -74,9 +72,8 @@ public class TurretPID extends NextFTCOpMode {
 //        } else if (gamepad1.xWasPressed()) {
 //            controller.setGoal(new KineticState(0.0, 1000.0));
 //        }
-        outtake.setPower(controller.calculate(new KineticState(
-                outtake.getCurrentPosition(),
-                outtake.getVelocity()))
+        hood.setPosition(controller.calculate(new KineticState(
+                hood.getPosition()))
         );
     }
 
