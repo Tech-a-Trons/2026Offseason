@@ -6,7 +6,7 @@ import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.MotorEx;
 
 public class Transfer implements Subsystem {
-    public static final Transfer INSTANCE = new Transfer();
+    public static Transfer INSTANCE = new Transfer();
     // put hardware, commands, etc here
 
     MotorEx transfer = new MotorEx("transfer");
@@ -25,6 +25,11 @@ public class Transfer implements Subsystem {
     public void advance() {
         transfer.setPower(-0.60);
     }
+
+    public void stop() {
+        transfer.setPower(0);
+    }
+
 
     public void init(HardwareMap hardwareMap) {
         // initialization logic (runs on init)

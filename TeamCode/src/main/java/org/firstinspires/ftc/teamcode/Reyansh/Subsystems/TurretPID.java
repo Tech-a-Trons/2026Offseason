@@ -2,21 +2,22 @@ package org.firstinspires.ftc.teamcode.Reyansh.Subsystems;
 
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
-import android.health.connect.datatypes.units.Velocity;
-
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
+import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.extensions.pedro.PedroComponent;
-import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.impl.MotorEx;
 
-public class TurretPID extends NextFTCOpMode {
+public class TurretPID implements Subsystem {
+
+    public static TurretPID INSTANCE = new TurretPID();
+
     private ControlSystem controller;
+
     public static MotorGroup outtake = new MotorGroup(
             new MotorEx("outtakeleft"),
             new MotorEx("outtakeright").reversed()
@@ -24,10 +25,16 @@ public class TurretPID extends NextFTCOpMode {
 
     Pose CachedPose = null;
 
-    @Override
-    public void onInit() {
+    public void init(HardwareMap hardwareMap) {
+        MotorGroup outtake = new MotorGroup(
+                new MotorEx("outtakeleft"),
+                new MotorEx("outtakeright").reversed()
+        );
 
 
+    }
+
+    public void Configure() {
         controller = ControlSystem.builder()
                 .velPid(0.001, 0.0, 0.0)
                 .basicFF(0.003, 0.08, 0.0)
@@ -40,33 +47,27 @@ public class TurretPID extends NextFTCOpMode {
     double xt = 121 - 72;
 
 
-    @Override
-    public void onUpdate() {
+    public void FlyWheelsOn() {
         follower.update();
-        telemetry.update();
-
-        follower.setTeleOpDrive(
-                -gamepad1.left_stick_y,
-                -gamepad1.left_stick_x,
-                -gamepad1.right_stick_x,
-                true // Robot Centric
-        );
-
+//        telemetry.update();
         Pose cachedPose = PedroComponent.follower().getPose();
 
         double x = cachedPose.getY() - 72;
         double y = cachedPose.getX() - 72;
-
         double distance = Math.sqrt(Math.pow(yt-y, 2)  + Math.pow(xt-x, 2));
         double Velocity = (distance * 200) + 200;
-        telemetry.addData(String.valueOf(Velocity), "Velocity");
-        telemetry.addData(String.valueOf(x), "x");
-        telemetry.addData(String.valueOf(y), "y");
-        telemetry.addData(String.valueOf(distance), "distance");
-        telemetry.addData(String.valueOf(outtake.getVelocity()), "distance");
-
-
         controller.setGoal(new KineticState(0.0, Velocity));
+        outtake.setPower(controller.calculate(new KineticState(
+                outtake.getCurrentPosition(),
+                outtake.getVelocity()))
+        );
+//        telemetry.addData(String.valueOf(Velocity), "Velocity");
+//        telemetry.addData(String.valueOf(x), "x");
+//        telemetry.addData(String.valueOf(y), "y");
+//        telemetry.addData(String.valueOf(distance), "distance");
+//        telemetry.addData(String.valueOf(outtake.getVelocity()), "distance");
+
+
 //        if (gamepad1.aWasPressed()) {
 //            controller.setGoal(new KineticState(0.0, 2000.0));
 //        } else if (gamepad1.bWasPressed()) {
@@ -74,12 +75,15 @@ public class TurretPID extends NextFTCOpMode {
 //        } else if (gamepad1.xWasPressed()) {
 //            controller.setGoal(new KineticState(0.0, 1000.0));
 //        }
+
+    }
+
+
+    public void stop() {
+        controller.setGoal(new KineticState(0.0, 0.0));
         outtake.setPower(controller.calculate(new KineticState(
                 outtake.getCurrentPosition(),
                 outtake.getVelocity()))
         );
     }
-
-
-
 }

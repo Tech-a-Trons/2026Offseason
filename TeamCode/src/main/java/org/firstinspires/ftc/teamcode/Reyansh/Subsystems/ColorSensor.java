@@ -2,17 +2,15 @@ package org.firstinspires.ftc.teamcode.Reyansh.Subsystems;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
-import android.graphics.Color;
-
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 
 import dev.nextftc.core.subsystems.Subsystem;
-import dev.nextftc.hardware.impl.MotorEx;
 
 public class ColorSensor implements Subsystem {
     public static ColorSensor INSTANCE = new ColorSensor();
@@ -31,16 +29,17 @@ public class ColorSensor implements Subsystem {
     double sat = JavaUtil.colorToSaturation(colors.toColor()); // <------ New code
     double val = JavaUtil.colorToValue(colors.toColor()); // <------ New code
 
+    public ElapsedTime runtime = new ElapsedTime();
     double artifactcounter = 0;
 
     public void IncountBalls(){
-        if (hue > 167) {
+        if (hue > 167 && runtime.milliseconds() > 200) {
             artifactcounter +=1;
-            light();
+            runtime.reset();
         }
-        if (sat > 0.5) {
+        if (sat > 0.5 && runtime.milliseconds() > 200) {
             artifactcounter +=1;
-            light();
+            runtime.reset();
         }
     }
 
@@ -60,7 +59,7 @@ public class ColorSensor implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-        IncountBalls();
+        light();
 
     }
 }

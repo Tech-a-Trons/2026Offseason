@@ -1,28 +1,29 @@
 package org.firstinspires.ftc.teamcode.Reyansh.Subsystems;
 
-import static com.pedropathing.math.MathFunctions.clamp;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
+import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.extensions.pedro.PedroComponent;
-import dev.nextftc.ftc.NextFTCOpMode;
-import dev.nextftc.hardware.controllable.MotorGroup;
-import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 
-public class Hood extends NextFTCOpMode {
+public class Hood implements Subsystem {
+    public static final Hood INSTANCE = new Hood();
     private ControlSystem controller;
     ServoEx hood = hardwareMap.get(ServoEx.class, "hood");
 
-
+    public void init(HardwareMap hardwareMap) {
+        // initialization logic (runs on init)
+        ServoEx hood = hardwareMap.get(ServoEx.class, "hood");
+    }
     Pose CachedPose = null;
 
-    @Override
-    public void onInit() {
-
+    public void configure() {
 
         controller = ControlSystem.builder()
                 .posPid(0.001, 0.0, 0.0)
@@ -36,17 +37,10 @@ public class Hood extends NextFTCOpMode {
     double xt = 121 - 72;
 
 
-    @Override
-    public void onUpdate() {
+    public void HoodOn() {
         follower.update();
-        telemetry.update();
+//        telemetry.update();
 
-        follower.setTeleOpDrive(
-                -gamepad1.left_stick_y,
-                -gamepad1.left_stick_x,
-                -gamepad1.right_stick_x,
-                true // Robot Centric
-        );
 
         Pose cachedPose = PedroComponent.follower().getPose();
 
@@ -55,13 +49,13 @@ public class Hood extends NextFTCOpMode {
 
         double distance = Math.sqrt(Math.pow(yt-y, 2)  + Math.pow(xt-x, 2));
         double Position = (distance * 0.01) + 0.2;
-        telemetry.addData(String.valueOf(Position), "Position");
-
-//        Position = clamp(Position, 0.0, 1.0);
-        telemetry.addData(String.valueOf(x), "x");
-        telemetry.addData(String.valueOf(y), "y");
-        telemetry.addData(String.valueOf(distance), "distance");
-//        telemetry.addData(String.valueOf(hood.getVelocity()), "distance");
+//        telemetry.addData(String.valueOf(Position), "Position");
+//
+////        Position = clamp(Position, 0.0, 1.0);
+//        telemetry.addData(String.valueOf(x), "x");
+//        telemetry.addData(String.valueOf(y), "y");
+//        telemetry.addData(String.valueOf(distance), "distance");
+////        telemetry.addData(String.valueOf(hood.getVelocity()), "distance");
 
 
         controller.setGoal(new KineticState(Position));
@@ -75,8 +69,20 @@ public class Hood extends NextFTCOpMode {
         hood.setPosition(controller.calculate(new KineticState(
                 hood.getPosition()))
         );
+
+    }
+
+    //    public void off() {
+//        controller.setGoal(new KineticState(0.0, 0.0));
+//        hood.setPosition(controller.calculate(new KineticState(
+//                hood.getPosition()))
+//
+//        );
+    @Override
+    public void periodic() {
+        // periodic logic (runs every loop)
+        HoodOn();
+    }
     }
 
 
-
-}

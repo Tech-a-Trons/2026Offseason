@@ -27,6 +27,11 @@ public class Intaker implements Subsystem {
         intake.setPower(0.60);
     }
 
+    public void stop() {
+        intake.setPower(0);
+    }
+
+
     public void init(HardwareMap hardwareMap) {
         // initialization logic (runs on init)
         MotorEx intake = new MotorEx("intake");
