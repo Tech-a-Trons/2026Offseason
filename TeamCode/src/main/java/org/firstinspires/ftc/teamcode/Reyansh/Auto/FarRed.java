@@ -10,6 +10,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import dev.nextftc.ftc.NextFTCOpMode;
 
@@ -20,6 +21,8 @@ public class FarRed extends NextFTCOpMode {
     public Follower follower; // Pedro Pathing follower instance
     private int pathState; // Current autonomous path state (state machine)
     private Paths paths; // Paths defined in the Paths class
+
+    ElapsedTime pathTimer = new ElapsedTime();
 
     @Override
     public void onInit() {
@@ -32,10 +35,13 @@ public class FarRed extends NextFTCOpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+        ElapsedTime pathTimer = new ElapsedTime();
+
     }
 
     @Override
     public void onUpdate() {
+
         follower.update(); // Update Pedro Pathing
         pathState = autonomousPathUpdate(); // Update autonomous state machine
 
@@ -115,6 +121,16 @@ public class FarRed extends NextFTCOpMode {
         // Add your state machine Here
         // Access paths with paths.pathName
         // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
+        case 1:
+        switch (pathState += 1) {
+            setPathState(6);
+return();
+        }
+
         return 0;
+    }
+    public void setPathState(int pState) {
+        pathState = pState;
+        pathTimer.reset();
     }
 }
