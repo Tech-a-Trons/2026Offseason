@@ -19,16 +19,16 @@ public class TurretPID implements Subsystem {
     private ControlSystem controller;
 
     public static MotorGroup outtake = new MotorGroup(
-            new MotorEx("outtakeleft"),
-            new MotorEx("outtakeright").reversed()
+            new MotorEx("outtakeleft").reversed(),
+            new MotorEx("outtakeright")
     );
 
     Pose CachedPose = null;
 
     public void init(HardwareMap hardwareMap) {
         MotorGroup outtake = new MotorGroup(
-                new MotorEx("outtakeleft"),
-                new MotorEx("outtakeright").reversed()
+                new MotorEx("outtakeleft").reversed(),
+                new MotorEx("outtakeright")
         );
 
 
