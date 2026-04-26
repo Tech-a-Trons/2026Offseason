@@ -1,6 +1,14 @@
 package org.firstinspires.ftc.teamcode.Pranav;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import java.util.Timer;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.components.BindingsComponent;
@@ -11,40 +19,89 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.MotorEx;
 
-@TeleOp(name = "NextFTC TeleOp Program Java")
+@TeleOp(name = "Pranav Tele")
 public class TeleOpProgram extends NextFTCOpMode {
     public TeleOpProgram() {
         addComponents(
-                new SubsystemComponent(Intake.INSTANCE, SimpleTurret.INSTANCE),
+                new SubsystemComponent(Intake.INSTANCE, Transfer.INSTANCE, ShooterPID.INSTANCE, Turret.INSTANCE, Hood.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
     }
 
-    // change the names and directions to suit your robot
-    private final MotorEx frontLeftMotor = new MotorEx("fl").reversed();
-    private final MotorEx frontRightMotor = new MotorEx("fr");
-    private final MotorEx backLeftMotor = new MotorEx("bl").reversed();
-    private final MotorEx backRightMotor = new MotorEx("br");
+    Transfer transfer;
+    Intake intake;
+    ShooterPID shooterPID;
+    Turret turret;
+    Hood hood;
+    Follower follower;
+    Pose start;
+
+    @Override
+    public void onInit() {
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(start == null ? new Pose() : start);
+        follower.update();
+        transfer = new Transfer(hardwareMap);
+        intake = new Intake(hardwareMap);
+        shooterPID = new ShooterPID("red");
+        hood = new Hood("red");
+        turret = new Turret("red");
+    }
 
     @Override
     public void onStartButtonPressed() {
-        Command driverControlled = new MecanumDriverControlled(
-                frontLeftMotor,
-                frontRightMotor,
-                backLeftMotor,
-                backRightMotor,
-                Gamepads.gamepad1().leftStickY().negate(),
-                Gamepads.gamepad1().leftStickX(),
-                Gamepads.gamepad1().rightStickX()
+//        if (gamepad1.right_bumper) {
+//            shooterPID.INSTANCE.close();
+//            if (gamepad1.dpad_up) {
+//                shooterPID.INSTANCE.close();
+//                intake.INSTANCE.into();
+//                transfer.INSTANCE.into();
+//            }
+//        }
+
+        if (gamepad1.left_bumper) {
+            shooterPID.INSTANCE.shoot();
+            if (gamepad1.dpad_up) {
+                shooterPID.INSTANCE.shoot();
+                intake.INSTANCE.into();
+                transfer.INSTANCE.into();
+            }
+        }
+
+        if (gamepad1.left_trigger_pressed) {
+            shooterPID.INSTANCE.stop();
+            intake.INSTANCE.off();
+            transfer.INSTANCE.off();
+        }
+
+        if (gamepad1.right_bumper) {
+            intake.INSTANCE.into();
+            transfer.INSTANCE.little();
+            if (gamepad1.right_trigger_pressed) {
+                transfer.INSTANCE.off();
+                intake.INSTANCE.into();
+            }
+        }
+
+        if (gamepad1.dpad_right) {
+            shooterPID.INSTANCE.repel();
+            intake.INSTANCE.out();
+            transfer.INSTANCE.out();
+        }
+    }
+
+    @Override
+    public void onUpdate() {
+        follower.update();
+
+        follower.setTeleOpDrive(
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
+                true
         );
-        driverControlled.schedule();
 
-        Gamepads.gamepad1().rightBumper().whenBecomesTrue(Intake.INSTANCE.into);
-        Gamepads.gamepad1().y().whenBecomesTrue(Intake.INSTANCE.out);
-        Gamepads.gamepad1().leftBumper().whenBecomesTrue(Intake.INSTANCE.off);
-
-        Gamepads.gamepad1().a().whenBecomesTrue(SimpleTurret.INSTANCE.left1.and(SimpleTurret.INSTANCE.right1));
-        Gamepads.gamepad1().b().whenBecomesTrue(SimpleTurret.INSTANCE.left2.and(SimpleTurret.INSTANCE.right2));
+        hood.setHood();
     }
 }

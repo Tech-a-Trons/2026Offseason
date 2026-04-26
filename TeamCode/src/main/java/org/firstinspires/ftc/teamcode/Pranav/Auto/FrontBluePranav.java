@@ -1,5 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
-import com.pedropathing.paths.Path;
+package org.firstinspires.ftc.teamcode.Pranav.Auto;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -11,6 +10,8 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.geometry.Pose;
+
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "FrontRedPranav", group = "Autonomous")
 @Configurable // Panels

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.Pranav.Auto;
 import com.pedropathing.paths.Path;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -12,20 +12,26 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.geometry.Pose;
 
-@Autonomous(name = "FrontRedPranav", group = "Autonomous")
+import org.firstinspires.ftc.teamcode.Pranav.ShooterPID;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+@Autonomous(name = "BackBluePranav", group = "Autonomous")
 @Configurable // Panels
-public class FrontRedPranav extends OpMode {
+public class BackBluePranav extends OpMode {
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
     private int pathState; // Current autonomous path state (state machine)
+    private ShooterPID shooter;
     private Paths paths; // Paths defined in the Paths class
     private Timer pathTimer;
     private Timer opmodeTimer;
-    public static Pose startPose = new Pose(122.77197452229298, 123.75031847133758, Math.toDegrees(37)); // Start Pose of our robot.
+    public static Pose startPose = new Pose(56.13248407643312, 8.254777070063692, Math.toDegrees(180)); // Start Pose of our robot.
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+
+//        shooter.init();
 
         pathTimer = new Timer();
         opmodeTimer = new Timer();
@@ -53,115 +59,131 @@ public class FrontRedPranav extends OpMode {
         panelsTelemetry.update(telemetry);
     }
 
-    public static PathChain gotoshoot1;
-    public static PathChain intake2nd;
-    public static PathChain gotoshoot2;
-    public static PathChain gate1;
-    public static PathChain gotoshoot3;
-    public static PathChain gate2;
-    public static PathChain gotoshoot4;
-    public static PathChain gate3;
-    public static PathChain gotoshoot5;
+    private static Path shootPreload;
+    public static PathChain intSide;
+    public static PathChain gtsPre;
+    public static PathChain int3rd;
+    public static PathChain gts3rd;
+    public static PathChain intG1;
+    public static PathChain gtsG1;
+    public static PathChain intG2;
+    public static PathChain gtsG2;
+    public static PathChain intG3;
+    public static PathChain gtsG3;
 
     public static class Paths {
 
         public Paths(Follower follower) {
-            gotoshoot1 = follower.pathBuilder()
+            shootPreload = new Path(new BezierLine(startPose,startPose));
+            shootPreload.setLinearHeadingInterpolation(startPose.getHeading(), startPose.getHeading());
+
+            intSide = follower.pathBuilder()
                     .addPath(
                             new BezierLine(
-                                    new Pose(122.772, 123.750),
-                                    new Pose(74.544, 84.284)
+                                    new Pose(56.132, 8.255),
+                                    new Pose(8.489, 8.668)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(37), Math.toRadians(0))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            intake2nd = follower.pathBuilder()
+            gtsPre = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(74.544, 84.284),
-                                    new Pose(98.016, 56.801),
-                                    new Pose(124.589, 59.401)
+                                    new Pose(8.489, 8.668),
+                                    new Pose(39.804, 8.458),
+                                    new Pose(63.396, 14.539)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            gotoshoot2 = follower.pathBuilder()
+            int3rd = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(124.589, 59.401),
-                                    new Pose(97.912, 56.759),
-                                    new Pose(74.466, 84.146)
+                                    new Pose(63.396, 14.539),
+                                    new Pose(52.422, 36.700),
+                                    new Pose(18.150, 35.546)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            gate1 = follower.pathBuilder()
+            gts3rd = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(74.466, 84.146),
-                                    new Pose(102.741, 62.785),
-                                    new Pose(131.567, 61.950)
+                                    new Pose(18.150, 35.546),
+                                    new Pose(44.763, 22.001),
+                                    new Pose(63.470, 14.492)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(30))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            gotoshoot3 = follower.pathBuilder()
+            intG1 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(131.567, 61.950),
-                                    new Pose(102.805, 62.839),
-                                    new Pose(74.629, 83.925)
+                                    new Pose(63.470, 14.492),
+                                    new Pose(39.830, 8.761),
+                                    new Pose(8.521, 8.735)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(30), Math.toRadians(0))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            gate2 = follower.pathBuilder()
+            gtsG1 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(74.629, 83.925),
-                                    new Pose(102.932, 62.769),
-                                    new Pose(131.619, 61.939)
+                                    new Pose(8.521, 8.735),
+                                    new Pose(39.746, 8.618),
+                                    new Pose(63.339, 14.389)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(30))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            gotoshoot4 = follower.pathBuilder()
+            intG2 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(131.619, 61.939),
-                                    new Pose(102.332, 62.776),
-                                    new Pose(74.567, 84.088)
+                                    new Pose(63.339, 14.389),
+                                    new Pose(39.831, 8.717),
+                                    new Pose(8.546, 8.697)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(30), Math.toRadians(0))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            gate3 = follower.pathBuilder()
+            gtsG2 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(74.567, 84.088),
-                                    new Pose(102.354, 62.484),
-                                    new Pose(131.992, 62.307)
+                                    new Pose(8.546, 8.697),
+                                    new Pose(39.857, 8.627),
+                                    new Pose(63.391, 14.391)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(30))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            gotoshoot5 = follower.pathBuilder()
+            intG3 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(131.992, 62.307),
-                                    new Pose(102.578, 62.806),
-                                    new Pose(74.394, 84.088)
+                                    new Pose(63.391, 14.391),
+                                    new Pose(39.802, 8.564),
+                                    new Pose(8.437, 8.809)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(30), Math.toRadians(0))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .build();
+
+            gtsG3 = follower.pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(8.437, 8.809),
+                                    new Pose(39.957, 8.611),
+                                    new Pose(63.608, 14.231)
+                            )
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
         }
     }
@@ -169,21 +191,18 @@ public class FrontRedPranav extends OpMode {
     public int autonomousPathUpdate() {
         switch (pathState) {
             case 0:
+//                follower.followPath(shootPreload);
+//                shooter.farshoot();
+
+                setPathState(1);
+                break;
+            case 1:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
                     /* Score Preload */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(gotoshoot1,true);
-                    setPathState(1);
-                }
-                break;
-            case 1:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(pathTimer.getElapsedTime() > 0.5) {
-                    /* Score Preload */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(intake2nd,true);
+                    follower.followPath(intSide,true);
                     setPathState(2);
                 }
                 break;
@@ -193,17 +212,18 @@ public class FrontRedPranav extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(gotoshoot2,true);
+                    follower.followPath(gtsPre,true);
+//                    shooter.farshoot();
                     setPathState(3);
                 }
                 break;
             case 3:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(pathTimer.getElapsedTime() > 0.5) {
+                if(!follower.isBusy()) {
                     /* Score Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(gate1,true);
+                    follower.followPath(int3rd,true);
                     setPathState(4);
                 }
                 break;
@@ -213,17 +233,18 @@ public class FrontRedPranav extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(gotoshoot3,true);
+                    follower.followPath(gts3rd,true);
+//                    shooter.farshoot();
                     setPathState(5);
                 }
                 break;
             case 5:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(pathTimer.getElapsedTime() > 0.5) {
+                if(!follower.isBusy()) {
                     /* Score Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(gate2,true);
+                    follower.followPath(intG1,true);
                     setPathState(6);
                 }
                 break;
@@ -233,15 +254,16 @@ public class FrontRedPranav extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(gotoshoot4, true);
+                    follower.followPath(gtsG1, true);
+//                    shooter.farshoot();
                     setPathState(7);
                 }
                 break;
             case 7:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(pathTimer.getElapsedTime() > 0.5) {
+                if(!follower.isBusy()) {
                     /* Set the state to a Case we won't use or define, so it just stops running an7 new paths */
-                    follower.followPath(gate3, true);
+                    follower.followPath(intG2, true);
                     setPathState(8);
                 }
                 break;
@@ -250,13 +272,30 @@ public class FrontRedPranav extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(gotoshoot5, true);
+                    follower.followPath(gtsG2, true);
+//                    shooter.farshoot();
                     setPathState(9);
                 }
                 break;
             case 9:
-                if(pathTimer.getElapsedTime() > 0.5) {
-                    /* Set the state to a Case we won't use or define, so it just stops running any new paths */
+                if(!follower.isBusy()) {
+                    /* Set the state to a Case we won't use or define, so it just stops running an7 new paths */
+                    follower.followPath(intG3, true);
+                    setPathState(10);
+                }
+                break;
+            case 10:
+                if(!follower.isBusy()) {
+                    /* Grab Sample */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
+                    follower.followPath(gtsG3, true);
+//                    shooter.farshoot();
+                    setPathState(11);
+                }
+                break;
+            case 11:
+                if(!follower.isBusy()) {
                     setPathState(-1);
                 }
                 break;

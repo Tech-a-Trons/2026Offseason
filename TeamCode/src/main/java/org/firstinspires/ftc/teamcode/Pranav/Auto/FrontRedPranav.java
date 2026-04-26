@@ -1,5 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
-import com.pedropathing.paths.Path;
+package org.firstinspires.ftc.teamcode.Pranav.Auto;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -12,16 +11,18 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.geometry.Pose;
 
-@Autonomous(name = "BackRedPranav", group = "Autonomous")
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+@Autonomous(name = "FrontRedPranav", group = "Autonomous")
 @Configurable // Panels
-public class BackRedPranav extends OpMode {
+public class FrontRedPranav extends OpMode {
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
     private int pathState; // Current autonomous path state (state machine)
     private Paths paths; // Paths defined in the Paths class
     private Timer pathTimer;
     private Timer opmodeTimer;
-    public static Pose startPose = new Pose(88.10191082802545, 8.18343949044586, Math.toDegrees(0)); // Start Pose of our robot.
+    public static Pose startPose = new Pose(122.77197452229298, 123.75031847133758, Math.toDegrees(37)); // Start Pose of our robot.
 
     @Override
     public void init() {
@@ -53,51 +54,35 @@ public class BackRedPranav extends OpMode {
         panelsTelemetry.update(telemetry);
     }
 
-    private static Path shootPreload;
-    public static PathChain intakeSide;
     public static PathChain gotoshoot1;
-    public static PathChain intake3rd;
+    public static PathChain intake2nd;
     public static PathChain gotoshoot2;
-    public static PathChain intakegate1;
+    public static PathChain gate1;
     public static PathChain gotoshoot3;
-    public static PathChain intakegate2;
+    public static PathChain gate2;
     public static PathChain gotoshoot4;
-    public static PathChain intakegate3;
-    public static PathChain telesetgotoshoot5;
+    public static PathChain gate3;
+    public static PathChain gotoshoot5;
 
     public static class Paths {
 
         public Paths(Follower follower) {
-            shootPreload = new Path(new BezierLine(startPose,startPose));
-            shootPreload.setLinearHeadingInterpolation(startPose.getHeading(), startPose.getHeading());
-
-            intakeSide = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(88.102, 8.183),
-                                    new Pose(135.804, 8.231)
-                            )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-                    .build();
-
             gotoshoot1 = follower.pathBuilder()
                     .addPath(
-                            new BezierCurve(
-                                    new Pose(135.804, 8.231),
-                                    new Pose(105.665, 7.705),
-                                    new Pose(80.242, 13.085)
+                            new BezierLine(
+                                    new Pose(122.772, 123.750),
+                                    new Pose(74.544, 84.284)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(37), Math.toRadians(0))
                     .build();
 
-            intake3rd = follower.pathBuilder()
+            intake2nd = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(80.242, 13.085),
-                                    new Pose(91.846, 36.960),
-                                    new Pose(126.125, 35.134)
+                                    new Pose(74.544, 84.284),
+                                    new Pose(98.016, 56.801),
+                                    new Pose(124.589, 59.401)
                             )
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(0))
@@ -105,78 +90,79 @@ public class BackRedPranav extends OpMode {
 
             gotoshoot2 = follower.pathBuilder()
                     .addPath(
-                            new BezierLine(
-                                    new Pose(126.125, 35.134),
-                                    new Pose(80.023, 13.201)
+                            new BezierCurve(
+                                    new Pose(124.589, 59.401),
+                                    new Pose(97.912, 56.759),
+                                    new Pose(74.466, 84.146)
                             )
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(0))
                     .build();
 
-            intakegate1 = follower.pathBuilder()
+            gate1 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(80.023, 13.201),
-                                    new Pose(106.028, 7.762),
-                                    new Pose(135.720, 8.140)
+                                    new Pose(74.466, 84.146),
+                                    new Pose(102.741, 62.785),
+                                    new Pose(131.567, 61.950)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(30))
                     .build();
 
             gotoshoot3 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(135.720, 8.140),
-                                    new Pose(105.628, 7.591),
-                                    new Pose(80.051, 13.060)
+                                    new Pose(131.567, 61.950),
+                                    new Pose(102.805, 62.839),
+                                    new Pose(74.629, 83.925)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(30), Math.toRadians(0))
                     .build();
 
-            intakegate2 = follower.pathBuilder()
+            gate2 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(80.051, 13.060),
-                                    new Pose(106.096, 7.450),
-                                    new Pose(135.775, 8.190)
+                                    new Pose(74.629, 83.925),
+                                    new Pose(102.932, 62.769),
+                                    new Pose(131.619, 61.939)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(30))
                     .build();
 
             gotoshoot4 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(135.775, 8.190),
-                                    new Pose(105.830, 7.702),
-                                    new Pose(80.176, 13.268)
+                                    new Pose(131.619, 61.939),
+                                    new Pose(102.332, 62.776),
+                                    new Pose(74.567, 84.088)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(30), Math.toRadians(0))
                     .build();
 
-            intakegate3 = follower.pathBuilder()
+            gate3 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(80.176, 13.268),
-                                    new Pose(106.041, 7.460),
-                                    new Pose(135.800, 8.238)
+                                    new Pose(74.567, 84.088),
+                                    new Pose(102.354, 62.484),
+                                    new Pose(131.992, 62.307)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(30))
                     .build();
 
-            telesetgotoshoot5 = follower.pathBuilder()
+            gotoshoot5 = follower.pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(135.800, 8.238),
-                                    new Pose(105.784, 7.679),
-                                    new Pose(79.934, 13.321)
+                                    new Pose(131.992, 62.307),
+                                    new Pose(102.578, 62.806),
+                                    new Pose(74.394, 84.088)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(30), Math.toRadians(0))
                     .build();
         }
     }
@@ -184,16 +170,21 @@ public class BackRedPranav extends OpMode {
     public int autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(shootPreload);
-                setPathState(1);
-                break;
-            case 1:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(pathTimer.getElapsedTime() > 0.2) {
+                if(!follower.isBusy()) {
                     /* Score Preload */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(intakeSide,true);
+                    follower.followPath(gotoshoot1,true);
+                    setPathState(1);
+                }
+                break;
+            case 1:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+                if(pathTimer.getElapsedTime() > 0.5) {
+                    /* Score Preload */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
+                    follower.followPath(intake2nd,true);
                     setPathState(2);
                 }
                 break;
@@ -203,17 +194,17 @@ public class BackRedPranav extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(gotoshoot1,true);
+                    follower.followPath(gotoshoot2,true);
                     setPathState(3);
                 }
                 break;
             case 3:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(pathTimer.getElapsedTime() > 0.2) {
+                if(pathTimer.getElapsedTime() > 0.5) {
                     /* Score Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(intake3rd,true);
+                    follower.followPath(gate1,true);
                     setPathState(4);
                 }
                 break;
@@ -223,17 +214,17 @@ public class BackRedPranav extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(gotoshoot2,true);
+                    follower.followPath(gotoshoot3,true);
                     setPathState(5);
                 }
                 break;
             case 5:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(pathTimer.getElapsedTime() > 0.2) {
+                if(pathTimer.getElapsedTime() > 0.5) {
                     /* Score Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(intakegate1,true);
+                    follower.followPath(gate2,true);
                     setPathState(6);
                 }
                 break;
@@ -243,15 +234,15 @@ public class BackRedPranav extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(gotoshoot3, true);
+                    follower.followPath(gotoshoot4, true);
                     setPathState(7);
                 }
                 break;
             case 7:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(pathTimer.getElapsedTime() > 0.2) {
+                if(pathTimer.getElapsedTime() > 0.5) {
                     /* Set the state to a Case we won't use or define, so it just stops running an7 new paths */
-                    follower.followPath(intakegate2, true);
+                    follower.followPath(gate3, true);
                     setPathState(8);
                 }
                 break;
@@ -260,28 +251,13 @@ public class BackRedPranav extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(gotoshoot4, true);
+                    follower.followPath(gotoshoot5, true);
                     setPathState(9);
                 }
                 break;
             case 9:
-                if(pathTimer.getElapsedTime() > 0.2) {
-                    /* Set the state to a Case we won't use or define, so it just stops running an7 new paths */
-                    follower.followPath(intakegate3, true);
-                    setPathState(10);
-                }
-                break;
-            case 10:
-                if(!follower.isBusy()) {
-                    /* Grab Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(telesetgotoshoot5, true);
-                    setPathState(11);
-                }
-                break;
-            case 11:
-                if(pathTimer.getElapsedTime() > 0.2) {
+                if(pathTimer.getElapsedTime() > 0.5) {
+                    /* Set the state to a Case we won't use or define, so it just stops running any new paths */
                     setPathState(-1);
                 }
                 break;

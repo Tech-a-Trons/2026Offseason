@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Pranav;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import dev.nextftc.control.ControlSystem;
@@ -12,19 +14,17 @@ import dev.nextftc.hardware.impl.MotorEx;
 
 public class Intake implements Subsystem {
     public static final Intake INSTANCE = new Intake(hardwareMap);
-    public Intake(HardwareMap hardwareMap) { }
-    private MotorEx motor = new MotorEx("intake");
-    private ControlSystem controlSystem = ControlSystem.builder()
-            .posPid(0.005, 0, 0)
-            .elevatorFF(0)
-            .build();
+    private MotorEx intake;
+    public Intake(HardwareMap hardwareMap) {
+        intake = hardwareMap.get(MotorEx.class, "in");
+    }
 
-    public Command into = new RunToVelocity(controlSystem,499).requires(this);
-    public Command out = new RunToVelocity(controlSystem,-499).requires(this);
-    public Command off = new RunToVelocity(controlSystem,0).requires(this);
+    public void into() { intake.setPower(0.6);}
+    public void out() { intake.setPower(-0.6);}
+    public void off() { intake.setPower(0.0);}
 
     @Override
     public void periodic() {
-        motor.setPower(controlSystem.calculate(motor.getState()));
+
     }
 }
